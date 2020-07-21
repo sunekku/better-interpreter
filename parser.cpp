@@ -12,8 +12,8 @@
 #define OP "OP"
 #define INT "INT"
 
-parser::Num::Num(lexer::Token* num, int val) {
-    val = val;
+parser::Num::Num(lexer::Token* num, int value) {
+    val = value;
     integer = num;
 }
 
@@ -68,6 +68,7 @@ parser::Node* parser::Parser::term() {
         Node* new_node = new Node(OP, nullptr, op);
         new_node->left = node;
         new_node->right = factor();
+        node = new_node;
     }
     return node;
 }
