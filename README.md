@@ -1,2 +1,2 @@
 # better-interpreter
-not even functional atm
+functional atm, will lose functionality shortly
