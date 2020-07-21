@@ -21,12 +21,18 @@ parser::Op::Op(lexer::Token* ope) {
     op = ope;
 }
 
-parser::Node::Node(std::string t, Num* n, Op* o) {
+parser::Unop::Unop(lexer::Token* ope) {
+    op = ope;
+}
+
+parser::Node::Node(std::string t, Num* n, Op* o, Unop *uno) {
     type = t;
     num = n;
     op = o;
+    unop = uno;
     right = nullptr;
     left = nullptr;
+    next = nullptr;
 }
 
 parser::Parser::Parser(lexer::Lexer * lex) {
@@ -40,7 +46,23 @@ parser::Node* parser::Parser::factor() {
         lexer::Token* token = curr_token;
         process(INTEGER);
         Num* num = new Num(token, token->value);
-        node = new Node(INT, num, nullptr);
+        node = new Node(INT, num, nullptr, nullptr);
+        return node;
+    }
+    else if (curr_token->type == PLUS) {
+        lexer::Token* token = curr_token;
+        process(PLUS);
+        Unop* unop = new Unop(token);
+        node = new Node(PLUS, nullptr, nullptr, unop);
+        node->next = factor();
+        return node;
+    }
+    else if (curr_token->type == MINUS) {
+        lexer::Token* token = curr_token;
+        process(MINUS);
+        Unop* unop = new Unop(token);
+        node = new Node(MINUS, nullptr, nullptr, unop);
+        node->next = factor();
         return node;
     }
     else {
@@ -65,7 +87,7 @@ parser::Node* parser::Parser::term() {
             process(MUL);
         }
         Op* op = new Op(token);
-        Node* new_node = new Node(OP, nullptr, op);
+        Node* new_node = new Node(OP, nullptr, op, nullptr);
         new_node->left = node;
         new_node->right = factor();
         node = new_node;
@@ -95,7 +117,7 @@ parser::Node* parser::Parser::expression() {
             process(MINUS);
         }
         Op* op = new Op(token);
-        Node* new_node = new Node(OP, nullptr, op);
+        Node* new_node = new Node(OP, nullptr, op, nullptr);
         new_node->left = node;
         new_node->right = term();
         node = new_node;

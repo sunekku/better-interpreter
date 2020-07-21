@@ -1,6 +1,4 @@
-
 #include "interpreter.h"
-
 #include <iostream>
 #include <string>
 #define INTEGER "INTEGER"
@@ -15,8 +13,14 @@
 
 
 int interpreter::Interpreter::calc(parser::Node* root) {
-    if (!(root->left) && !(root->right))
+    if (!(root->left) && !(root->right) && !(root -> next))
         return root->num->val;
+    if (!(root->left) && !(root->right) && (root->next)) {
+        if (root->unop->op->type == MINUS)
+            return -1 * calc(root->next);
+        else
+            return calc(root->next);
+    }
     if (root->op->op->type == MINUS)
         return calc(root->left) - calc(root->right);
     if (root->op->op->type == PLUS)

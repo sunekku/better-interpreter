@@ -15,6 +15,12 @@ namespace parser {
         Num(lexer::Token* num, int val);
     };
 
+    class Unop : AST {
+    public: 
+        lexer::Token* op;
+        Unop(lexer::Token* ope);
+    };
+
     class Op : AST {
     public:
         lexer::Token* op;
@@ -26,9 +32,11 @@ namespace parser {
         std::string type;
         Num* num;
         Op* op;
+        Unop* unop;
         Node* right;
         Node* left;
-        Node(std::string t, Num* n, Op* o);
+        Node* next;
+        Node(std::string t, Num* n, Op* o, Unop *unop);
     };
 
     class Parser {
