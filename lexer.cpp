@@ -92,7 +92,7 @@ int lexer::Lexer::to_integer(std::string number) {
 
 lexer::Token* lexer::Lexer::keyword() {
     std::string keyword = "";
-    while (curr_character != NULL && isdigit(curr_character)) {
+    while (curr_character != NULL && isalnum(curr_character)) {
         keyword.push_back(curr_character);
         advance();
     }
@@ -124,6 +124,9 @@ lexer::Token* lexer::Lexer::next_token() {
 
         skip_whitespace();
 
+        if (isalpha(curr_character)) {
+            return keyword();
+        }
         if (curr_character == ':' && lexer::Lexer::peek() == '=') {
             Token* token = new Token(SEMI, 0);
             token->str = ":=";
